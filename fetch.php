@@ -5,10 +5,12 @@ if (!isset($_SESSION['user'])) {
     exit();
 }
 $since = intval($_GET['since'] ?? 0);
-$messages = json_decode(file_get_contents(__DIR__ . '/data/messages.json'), true);
+$messages = json_decode(@file_get_contents(__DIR__ . '/data/messages.json'), true);
+if (!is_array($messages)) $messages = [];
 $newMessages = array_filter($messages, function($m) use ($since) { return $m['id'] > $since; });
 // update online timestamps and remove stale
-$online = json_decode(file_get_contents(__DIR__ . '/data/online.json'), true);
+$online = json_decode(@file_get_contents(__DIR__ . '/data/online.json'), true);
+if (!is_array($online)) $online = [];
 $now = time();
 $changed = false;
 foreach ($online as $user => $ts) {

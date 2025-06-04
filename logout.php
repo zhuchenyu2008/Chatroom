@@ -2,10 +2,12 @@
 session_start();
 if (isset($_SESSION['user'])) {
     $user = $_SESSION['user'];
-    $online = json_decode(file_get_contents(__DIR__ . '/data/online.json'), true);
+    $online = json_decode(@file_get_contents(__DIR__ . '/data/online.json'), true);
+    if (!is_array($online)) $online = [];
     unset($online[$user]);
     file_put_contents(__DIR__ . '/data/online.json', json_encode($online, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
-    $messages = json_decode(file_get_contents(__DIR__ . '/data/messages.json'), true);
+    $messages = json_decode(@file_get_contents(__DIR__ . '/data/messages.json'), true);
+    if (!is_array($messages)) $messages = [];
     $id = end($messages)['id'] ?? 0;
     $messages[] = [
         'id' => $id + 1,

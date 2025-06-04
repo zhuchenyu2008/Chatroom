@@ -9,7 +9,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($name !== '') {
         $_SESSION['user'] = htmlspecialchars($name, ENT_QUOTES, 'UTF-8');
         // add system message for join
-        $messages = json_decode(file_get_contents(__DIR__ . '/data/messages.json'), true);
+        $messages = json_decode(@file_get_contents(__DIR__ . '/data/messages.json'), true);
+        if (!is_array($messages)) $messages = [];
         $id = end($messages)['id'] ?? 0;
         $messages[] = [
             'id' => $id + 1,
@@ -20,7 +21,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         ];
         file_put_contents(__DIR__ . '/data/messages.json', json_encode($messages, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
         // update online list
-        $online = json_decode(file_get_contents(__DIR__ . '/data/online.json'), true);
+        $online = json_decode(@file_get_contents(__DIR__ . '/data/online.json'), true);
+        if (!is_array($online)) $online = [];
         $online[$_SESSION['user']] = time();
         file_put_contents(__DIR__ . '/data/online.json', json_encode($online, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
         header('Location: chat.php');

@@ -22,4 +22,5 @@
    php -S localhost:8000
    ```
 3. 通过浏览器访问 [http://localhost:8000/index.php](http://localhost:8000/index.php) 即可体验。
+4. 聊天记录和在线列表保存在 `data` 目录中的 `messages.json` 与 `online.json`。
 
