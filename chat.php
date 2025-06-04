@@ -16,7 +16,7 @@ if (!isset($_SESSION['user'])) {
 <body class="chat-page">
 <header>
     <div class="header-left">欢迎，<?php echo htmlspecialchars($_SESSION['user']); ?></div>
-    <div class="header-right" id="online-count"></div>
+    <div class="header-right"><span id="online-count"></span><a href="logout.php" class="logout">退出</a></div>
 </header>
 <div id="messages" class="messages"></div>
 <form id="send-form" class="send-form">
