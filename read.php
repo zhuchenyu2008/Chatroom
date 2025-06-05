@@ -7,7 +7,8 @@ if (!isset($_SESSION['user']) || $_SERVER['REQUEST_METHOD'] !== 'POST') {
 $ids = $_POST['ids'] ?? [];
 $ids = array_map('intval', $ids);
 if (!$ids) exit();
-$messages = json_decode(file_get_contents(__DIR__ . '/data/messages.json'), true);
+$messages_content = file_get_contents(__DIR__ . '/messages.json');
+$messages = ($messages_content && ($decoded_messages = json_decode($messages_content, true)) !== null) ? $decoded_messages : [];
 foreach ($messages as &$m) {
     if (in_array($m['id'], $ids)) {
         if (!in_array($_SESSION['user'], $m['read_by'])) {
@@ -15,5 +16,5 @@ foreach ($messages as &$m) {
         }
     }
 }
-file_put_contents(__DIR__ . '/data/messages.json', json_encode($messages, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+file_put_contents(__DIR__ . '/messages.json', json_encode($messages, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
 ?>
