@@ -1,3 +1,7 @@
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
 body {
     font-family: Arial, sans-serif;
     margin: 0;
@@ -19,6 +23,7 @@ a {
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0,0,0,0.3);
     text-align: center;
+    width: 300px; /* Default width */
 }
 .login-form input {
     padding: 0.5rem;
@@ -32,10 +37,11 @@ a {
     padding: 0.5rem 1rem;
     display: flex;
     justify-content: space-between;
+    align-items: center; /* Align items vertically */
 }
 .messages {
     padding: 1rem;
-    height: calc(100vh - 120px);
+    height: calc(100vh - 100px); /* Adjusted default height slightly */
     overflow-y: auto;
     background: #444654;
     animation: fadein 0.5s;
@@ -79,4 +85,81 @@ a {
 @keyframes slide {
     from { transform: translateY(10px); opacity:0; }
     to { transform: translateY(0); opacity:1; }
+}
+
+/* Media Queries */
+@media (max-width: 768px) {
+    .login-form {
+        width: 80%;
+        max-width: 450px; /* Max width for tablets */
+        padding: 1.8rem;
+    }
+    .login-form input {
+        width: 90%; /* Wider input on tablets */
+    }
+
+    .chat-page header {
+        padding: 0.5rem 0.8rem; /* Slightly less padding */
+    }
+    .messages {
+        height: calc(100vh - 95px); /* Adjust height for send form */
+    }
+    .send-form input {
+        padding: 0.6rem;
+    }
+    .send-form button {
+        padding: 0.6rem 1.1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    body {
+        font-size: 14px; /* Slightly smaller base font for mobile */
+    }
+    .login-form {
+        width: 90%;
+        max-width: 400px; /* Max width for mobile */
+        padding: 1.5rem; /* Adjusted padding for mobile */
+    }
+    .login-form h2 {
+        font-size: 1.4rem; /* Adjusted for mobile */
+    }
+    .login-form input {
+        width: 100%; /* Full width input */
+        margin-bottom: 0.8rem;
+    }
+    .chat-page header {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.9rem;
+        flex-direction: column; /* Stack header items */
+        align-items: flex-start; /* Align to start */
+    }
+    .chat-page header .header-left, .chat-page header .header-right {
+        margin-bottom: 0.2rem; /* Add some space when stacked */
+    }
+    .messages {
+        /* Height adjusted to account for taller header and send form */
+        height: calc(100vh - 120px);
+        padding: 0.5rem;
+    }
+    .send-form {
+        padding: 0.4rem;
+        flex-direction: column; /* Stack input and button */
+    }
+    .send-form input {
+        padding: 0.5rem; /* Adjusted padding */
+        margin-bottom: 0.4rem; /* Space between input and button */
+        width: 100%;
+    }
+    .send-form button {
+        padding: 0.5rem 0.8rem; /* Adjusted padding */
+        margin-left: 0; /* Remove margin when stacked */
+        width: 100%; /* Full width button */
+    }
+    .message .meta {
+        font-size: 0.75rem; /* Slightly smaller meta text */
+    }
+    .message .text {
+        font-size: 0.9rem; /* Slightly smaller message text */
+    }
 }

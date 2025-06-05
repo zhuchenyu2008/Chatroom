@@ -9,6 +9,7 @@ if (!isset($_SESSION['user'])) {
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>聊天室</title>
 <link rel="stylesheet" href="styles.css">
 </head>
