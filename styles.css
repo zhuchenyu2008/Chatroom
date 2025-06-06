@@ -132,6 +132,9 @@ body {
     /* This might need fine-tuning based on actual header/footer heights */
     height: calc(100vh - 100px);
     box-sizing: border-box;
+    display: flex; /* Added */
+    flex-direction: column; /* Added */
+    align-items: flex-start; /* Added for default left alignment */
 }
 
 .send-form {
@@ -185,13 +188,13 @@ body {
     border: 1px solid #252525;
     box-shadow: none;
     animation: messageFadeIn 0.3s ease-out forwards;
-    word-wrap: break-word;
-    max-width: 90%;
+    overflow-wrap: break-word; /* Standard property */
+    max-width: 75%; /* Changed from 90% */
 }
 
 .message.current-user-message {
     background: #202020; /* Slightly different for current user */
-    margin-left: auto; /* Align to the right */
+    align-self: flex-end; /* Changed from margin-left: auto for flex context */
     border-color: #282828; /* Match background accent */
 }
 
@@ -282,6 +285,7 @@ body {
         padding: 0.8rem;
         /* Adjust height for potentially smaller header/footer */
         height: calc(100vh - 90px);
+        /* display: flex; flex-direction: column; align-items: flex-start; already inherited */
     }
 
     .send-form {
@@ -301,7 +305,8 @@ body {
 
     .message {
         padding: 0.5rem 0.8rem;
-        max-width: 95%; /* Allow messages to use more width on small screens */
+        /* max-width: 75%; will be inherited, but for small screens, 95% was specific. Let's keep it. */
+        max-width: 95%; /* Allow messages to use more width on small screens - Overrides 75% for this media query */
     }
 
     .message .meta {
