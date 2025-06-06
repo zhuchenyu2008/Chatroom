@@ -192,6 +192,30 @@ body {
     max-width: 75%; /* Changed from 90% */
 }
 
+/* System Messages */
+.system-message {
+    background-color: #151515; /* Slightly different background */
+    border: 1px solid #2a2a2a;
+    color: #AAAAAA; /* Lighter text color for emphasis */
+    font-style: italic;
+    text-align: center; /* Center align system messages */
+    width: 100%; /* Make system messages take full width */
+    max-width: 100%; /* Override max-width from .message */
+    margin-left: 0; /* Ensure it's centered if other messages are not */
+    align-self: center; /* Center in flex container */
+}
+
+.system-message .text {
+   color: #AAAAAA; /* Ensure text color is consistent */
+}
+
+/* System messages shouldn't show user/read info, so hide them if they are somehow added */
+.system-message strong,
+.system-message .read,
+.system-message .meta {
+    display: none !important;
+}
+
 .message.current-user-message {
     background: #202020; /* Slightly different for current user */
     align-self: flex-end; /* Changed from margin-left: auto for flex context */

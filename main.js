@@ -25,6 +25,7 @@ function fetchMessages() {
 }
 function addMessage(m) {
     const div = document.createElement('div');
+    div.id = 'message-' + m.id; // Add unique ID
     if (m.user === currentUser) {
         div.className = 'message current-user-message';
     } else {
@@ -33,43 +34,51 @@ function addMessage(m) {
 
     const messageDate = new Date(m.timestamp * 1000);
     const roughTime = messageDate.getHours().toString().padStart(2, '0') + ':' + messageDate.getMinutes().toString().padStart(2, '0');
-    const detailedTimeStr = messageDate.toLocaleString();
-    const readByList = m.read_by.length > 0 ? m.read_by.join(', ') : 'None';
 
-    div.innerHTML = `<strong>${m.user}</strong>: <span class="text">${m.text}</span> <span class="message-time">${roughTime}</span>` +
-        ` <span class="read">已读 ${m.read_by.length}</span>` +
-        ` <div class="meta" style="display:none">` +
-        `  <span class="detailed-time" style="display:none">${detailedTimeStr}</span>` +
-        `  <span class="detailed-read-by" style="display:none">Read by: ${readByList}</span>` +
-        ` </div>`;
+    if (m.user === 'system') {
+        div.classList.add('system-message');
+        div.innerHTML = `<span class="text">${m.text}</span> <span class="message-time">${roughTime}</span>`;
+        // System messages typically don't have detailed read-by lists or user interactions like regular messages.
+        // So, we skip adding event listeners for .message-time and .read for system messages.
+    } else {
+        const detailedTimeStr = messageDate.toLocaleString();
+        const readByList = m.read_by.length > 0 ? m.read_by.join(', ') : 'None';
 
-    div.querySelector('.message-time').onclick = () => {
-        const meta = div.querySelector('.meta');
-        const detailedTime = meta.querySelector('.detailed-time');
-        const detailedReadBy = meta.querySelector('.detailed-read-by');
+        div.innerHTML = `<strong>${m.user}</strong> <span class="text">${m.text}</span> <span class="message-time">${roughTime}</span>` +
+            ` <span class="read">已读 ${m.read_by.length}</span>` +
+            ` <div class="meta" style="display:none">` +
+            `  <span class="detailed-time" style="display:none">${detailedTimeStr}</span>` +
+            `  <span class="detailed-read-by" style="display:none">Read by: ${readByList}</span>` +
+            ` </div>`;
 
-        detailedTime.style.display = detailedTime.style.display === 'none' ? 'block' : 'none';
+        div.querySelector('.message-time').onclick = () => {
+            const meta = div.querySelector('.meta');
+            const detailedTime = meta.querySelector('.detailed-time');
+            const detailedReadBy = meta.querySelector('.detailed-read-by');
 
-        if (detailedTime.style.display === 'block' || detailedReadBy.style.display === 'block') {
-            meta.style.display = 'block';
-        } else {
-            meta.style.display = 'none';
-        }
-    };
+            detailedTime.style.display = detailedTime.style.display === 'none' ? 'block' : 'none';
 
-    div.querySelector('.read').onclick = () => {
-        const meta = div.querySelector('.meta');
-        const detailedTime = meta.querySelector('.detailed-time');
-        const detailedReadBy = meta.querySelector('.detailed-read-by');
+            if (detailedTime.style.display === 'block' || detailedReadBy.style.display === 'block') {
+                meta.style.display = 'block';
+            } else {
+                meta.style.display = 'none';
+            }
+        };
 
-        detailedReadBy.style.display = detailedReadBy.style.display === 'none' ? 'block' : 'none';
+        div.querySelector('.read').onclick = () => {
+            const meta = div.querySelector('.meta');
+            const detailedTime = meta.querySelector('.detailed-time');
+            const detailedReadBy = meta.querySelector('.detailed-read-by');
 
-        if (detailedTime.style.display === 'block' || detailedReadBy.style.display === 'block') {
-            meta.style.display = 'block';
-        } else {
-            meta.style.display = 'none';
-        }
-    };
+            detailedReadBy.style.display = detailedReadBy.style.display === 'none' ? 'block' : 'none';
+
+            if (detailedTime.style.display === 'block' || detailedReadBy.style.display === 'block') {
+                meta.style.display = 'block';
+            } else {
+                meta.style.display = 'none';
+            }
+        };
+    }
     msgs.appendChild(div);
     msgs.scrollTop = msgs.scrollHeight;
 }
