@@ -7,7 +7,7 @@ if (!isset($_SESSION['user'])) {
 $since = intval($_GET['since'] ?? 0);
 $messages_content = file_get_contents(__DIR__ . '/messages.json');
 $messages = ($messages_content && ($decoded_messages = json_decode($messages_content, true)) !== null) ? $decoded_messages : [];
-$newMessages = array_filter($messages, function($m) use ($since) { return $m['id'] > $since; });
+$newMessages = $messages;
 // update online timestamps and remove stale
 $online_content = file_get_contents(__DIR__ . '/online.json');
 $online = ($online_content && ($decoded_online = json_decode($online_content, true)) !== null) ? $decoded_online : (object)[];
@@ -33,7 +33,7 @@ $online[$_SESSION['user']] = $now;
 file_put_contents(__DIR__ . '/online.json', json_encode($online, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
 if ($changed) {
     file_put_contents(__DIR__ . '/messages.json', json_encode($messages, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
-    $newMessages = array_filter($messages, function($m) use ($since) { return $m['id'] > $since; });
+    $newMessages = $messages;
 }
 header('Content-Type: application/json');
 echo json_encode([
