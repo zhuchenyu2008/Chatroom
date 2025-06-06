@@ -26,6 +26,7 @@ if (!isset($_SESSION['user'])) {
     <input type="text" id="message" autocomplete="off" placeholder="输入消息..." required>
     <button type="submit">发送</button>
 </form>
+<script>const currentUser = '<?php echo htmlspecialchars($_SESSION['user']); ?>';</script>
 <script src="main.js"></script>
 </body>
 </html>
