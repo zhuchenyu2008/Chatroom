@@ -1,165 +1,373 @@
-*, *::before, *::after {
-    box-sizing: border-box;
+/* Overall Theme */
+body {
+    background-color: #101010;
+    color: #F5F5F5;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    overflow-x: hidden; /* Prevent horizontal scroll */
 }
 
-body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    background: #343541;
-    color: #fff;
-}
-a {
-    color: #58a6ff;
-}
+/* Login Page */
 .login-page {
     display: flex;
     height: 100vh;
     justify-content: center;
     align-items: center;
-}
-.login-form {
-    background: #444654;
-    padding: 2rem;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.3);
-    text-align: center;
-    width: 300px; /* Default width */
-}
-.login-form input {
-    padding: 0.5rem;
-    margin-bottom: 1rem;
-    width: 200px;
-    border: none;
-    border-radius: 4px;
-}
-.chat-page header {
-    background: #202123;
-    padding: 0.5rem 1rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center; /* Align items vertically */
-}
-.messages {
-    padding: 1rem;
-    height: calc(100vh - 100px); /* Adjusted default height slightly */
-    overflow-y: auto;
-    background: #444654;
-    animation: fadein 0.5s;
-}
-.send-form {
-    display: flex;
-    padding: 0.5rem;
-    background: #343541;
-}
-.send-form input {
-    flex: 1;
-    padding: 0.5rem;
-    border-radius: 4px;
-    border: none;
-}
-.send-form button {
-    margin-left: 0.5rem;
-    padding: 0.5rem 1rem;
-    border: none;
-    background: #10a37f;
-    color: #fff;
-    border-radius: 4px;
-}
-.message {
-    margin-bottom: 1rem;
-    animation: slide 0.3s;
-}
-.message .meta {
-    font-size: 0.8rem;
-    color: #ccc;
-}
-.message .read {
-    cursor: pointer;
-    font-size: 0.8rem;
-    color: #58a6ff;
-}
-@keyframes fadein {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
-@keyframes slide {
-    from { transform: translateY(10px); opacity:0; }
-    to { transform: translateY(0); opacity:1; }
+    animation: fadein 0.3s ease-out; /* Subtle fade-in */
 }
 
-/* Media Queries */
+.login-form {
+    background: #181818;
+    padding: 2rem;
+    border-radius: 8px;
+    border: 1px solid #333333;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    width: 320px;
+    box-sizing: border-box;
+}
+
+.login-form h2 {
+    color: #F5F5F5;
+    margin-bottom: 1.5rem;
+    text-align: center;
+    font-size: 1.6rem; /* Slightly smaller */
+    font-weight: 300; /* Lighter font weight */
+}
+
+.login-form input[type="text"] {
+    background: #101010;
+    color: #F5F5F5;
+    border: 1px solid #333333;
+    border-radius: 4px;
+    padding: 0.75rem;
+    width: 100%;
+    margin-bottom: 1rem; /* Adjusted spacing */
+    box-sizing: border-box;
+    transition: border-color 0.2s ease;
+}
+
+.login-form input[type="text"]:focus {
+    border-color: #555555;
+    outline: none;
+    box-shadow: none;
+}
+
+.login-form button[type="submit"] {
+    background: #282828;
+    color: #F5F5F5;
+    border: 1px solid #333333;
+    border-radius: 4px;
+    padding: 0.75rem;
+    width: 100%;
+    font-weight: normal; /* Simpler */
+    text-transform: none;
+    letter-spacing: normal;
+    cursor: pointer;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.login-form button[type="submit"]:hover {
+    background: #303030;
+    border-color: #555555;
+}
+
+/* Chat Page */
+.chat-page {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+.chat-page header {
+    background: #101010;
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid #333333;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #F5F5F5;
+    box-shadow: none;
+}
+
+.header-left {
+    font-size: 1rem; /* Simplified size */
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+}
+
+#online-count {
+    color: #AAAAAA; /* Muted grey */
+    font-size: 0.85rem;
+    margin-right: 10px;
+}
+
+#logout-button {
+    text-decoration: none;
+    color: #AAAAAA;
+    padding: 0.2rem 0.5rem;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+#logout-button:hover {
+    color: #F5F5F5;
+    border-color: #555555;
+}
+
+.messages {
+    background: #101010;
+    padding: 1rem;
+    flex-grow: 1;
+    overflow-y: auto;
+    /* Adjusted height, ensure it fills available space correctly */
+    /* This might need fine-tuning based on actual header/footer heights */
+    height: calc(100vh - 100px);
+    box-sizing: border-box;
+    display: flex; /* Added */
+    flex-direction: column; /* Added */
+    align-items: flex-start; /* Added for default left alignment */
+}
+
+.send-form {
+    background: #101010;
+    padding: 0.75rem 1rem;
+    border-top: 1px solid #333333;
+    display: flex;
+    align-items: center;
+    box-sizing: border-box;
+}
+
+.send-form input[type="text"] {
+    background: #181818;
+    color: #F5F5F5;
+    border: 1px solid #333333;
+    border-radius: 20px; /* Keep pill shape for chat input */
+    padding: 0.6rem 1rem;
+    flex-grow: 1;
+    margin-right: 0.5rem; /* Reduced margin */
+    box-sizing: border-box;
+    transition: border-color 0.2s ease;
+}
+
+.send-form input[type="text"]:focus {
+    border-color: #555555;
+    outline: none;
+    box-shadow: none;
+}
+
+.send-form button[type="submit"] {
+    background: #282828;
+    color: #F5F5F5;
+    border: 1px solid #333333;
+    border-radius: 20px; /* Match input */
+    padding: 0.6rem 1.2rem;
+    font-weight: normal; /* Simpler */
+    cursor: pointer;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.send-form button[type="submit"]:hover {
+    background: #303030;
+    border-color: #555555;
+}
+
+.message {
+    background: #181818;
+    padding: 0.6rem 1rem;
+    border-radius: 8px;
+    margin-bottom: 0.75rem;
+    border: 1px solid #252525;
+    box-shadow: none;
+    animation: messageFadeIn 0.3s ease-out forwards;
+    overflow-wrap: break-word; /* Standard property */
+    max-width: 75%; /* Changed from 90% */
+}
+
+.message.current-user-message {
+    background: #202020; /* Slightly different for current user */
+    align-self: flex-end; /* Changed from margin-left: auto for flex context */
+    border-color: #282828; /* Match background accent */
+}
+
+.message strong {
+    color: #F5F5F5;
+    font-weight: 500; /* Slightly bolder than normal but not full bold */
+    display: block;
+    margin-bottom: 0.25rem;
+}
+
+.message .text {
+    color: #E0E0E0; /* Slightly less bright for message text if needed, or use F5F5F5 */
+    line-height: 1.4; /* Adjusted line-height */
+}
+
+.message .meta {
+    color: #777777;
+    font-size: 0.7rem;
+    margin-top: 0.4rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.message .read {
+    color: #777777;
+    font-size: 0.7rem;
+    cursor: pointer;
+    opacity: 0.8;
+    transition: opacity 0.2s ease;
+    margin-left: 8px;
+}
+
+.message .read:hover {
+    opacity: 1;
+}
+
+/* Animations */
+@keyframes fadein { /* General page fade-in */
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+@keyframes messageFadeIn { /* Subtle message appearance */
+    from { opacity: 0; transform: translateY(5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Scrollbar Styling */
+::-webkit-scrollbar {
+    width: 6px;
+}
+::-webkit-scrollbar-track {
+    background: #101010;
+}
+::-webkit-scrollbar-thumb {
+    background: #333333;
+    border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #444444;
+}
+
+/* Responsive Design */
 @media (max-width: 768px) {
     .login-form {
-        width: 80%;
-        max-width: 450px; /* Max width for tablets */
-        padding: 1.8rem;
+        width: 90%;
+        padding: 1.5rem;
     }
-    .login-form input {
-        width: 90%; /* Wider input on tablets */
+
+    .login-form h2 {
+        font-size: 1.4rem;
     }
 
     .chat-page header {
-        padding: 0.5rem 0.8rem; /* Slightly less padding */
+        padding: 0.6rem 0.8rem;
     }
+
+    .header-left {
+        font-size: 0.9rem;
+    }
+
+    #logout-button {
+        font-size: 0.8rem;
+    }
+
     .messages {
-        height: calc(100vh - 95px); /* Adjust height for send form */
+        padding: 0.8rem;
+        /* Adjust height for potentially smaller header/footer */
+        height: calc(100vh - 90px);
+        /* display: flex; flex-direction: column; align-items: flex-start; already inherited */
     }
-    .send-form input {
-        padding: 0.6rem;
+
+    .send-form {
+        padding: 0.6rem 0.8rem;
+        /* Consider if stacking is still needed, pill inputs might look better side-by-side */
     }
-    .send-form button {
-        padding: 0.6rem 1.1rem;
+
+    .send-form input[type="text"] {
+        padding: 0.5rem 0.8rem; /* Slightly smaller padding */
+        font-size: 0.9rem;
+    }
+
+    .send-form button[type="submit"] {
+        padding: 0.5rem 1rem; /* Slightly smaller padding */
+        font-size: 0.9rem;
+    }
+
+    .message {
+        padding: 0.5rem 0.8rem;
+        /* max-width: 75%; will be inherited, but for small screens, 95% was specific. Let's keep it. */
+        max-width: 95%; /* Allow messages to use more width on small screens - Overrides 75% for this media query */
+    }
+
+    .message .meta {
+        font-size: 0.65rem;
     }
 }
 
 @media (max-width: 480px) {
     body {
-        font-size: 14px; /* Slightly smaller base font for mobile */
+        font-size: 13px; /* Base font for very small screens */
     }
+
     .login-form {
-        width: 90%;
-        max-width: 400px; /* Max width for mobile */
-        padding: 1.5rem; /* Adjusted padding for mobile */
+        padding: 1.2rem;
     }
+
     .login-form h2 {
-        font-size: 1.4rem; /* Adjusted for mobile */
+        font-size: 1.3rem;
+        margin-bottom: 1.2rem;
     }
-    .login-form input {
-        width: 100%; /* Full width input */
-        margin-bottom: 0.8rem;
+
+    .login-form input[type="text"],
+    .login-form button[type="submit"] {
+        padding: 0.65rem;
+        font-size: 0.85rem;
     }
+
     .chat-page header {
-        padding: 0.4rem 0.8rem;
-        font-size: 0.9rem;
-        flex-direction: column; /* Stack header items */
-        align-items: flex-start; /* Align to start */
+        padding: 0.5rem 0.6rem;
     }
-    .chat-page header .header-left, .chat-page header .header-right {
-        margin-bottom: 0.2rem; /* Add some space when stacked */
+
+    .header-left {
+        font-size: 0.85rem;
     }
+
+    #online-count {
+        font-size: 0.75rem;
+        margin-right: 8px;
+    }
+
+    #logout-button {
+        font-size: 0.75rem;
+        padding: 0.15rem 0.3rem;
+    }
+
     .messages {
-        /* Height adjusted to account for taller header and send form */
-        height: calc(100vh - 120px);
-        padding: 0.5rem;
+        /* Further adjust height */
+        height: calc(100vh - 80px);
     }
-    .send-form {
-        padding: 0.4rem;
-        flex-direction: column; /* Stack input and button */
+
+    .send-form input[type="text"],
+    .send-form button[type="submit"] {
+        padding: 0.5rem 0.8rem;
+        font-size: 0.85rem;
     }
-    .send-form input {
-        padding: 0.5rem; /* Adjusted padding */
-        margin-bottom: 0.4rem; /* Space between input and button */
-        width: 100%;
+
+    .message strong {
+        font-size: 0.9rem;
     }
-    .send-form button {
-        padding: 0.5rem 0.8rem; /* Adjusted padding */
-        margin-left: 0; /* Remove margin when stacked */
-        width: 100%; /* Full width button */
-    }
-    .message .meta {
-        font-size: 0.75rem; /* Slightly smaller meta text */
-    }
+
     .message .text {
-        font-size: 0.9rem; /* Slightly smaller message text */
+        font-size: 0.85rem;
     }
 }

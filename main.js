@@ -50,6 +50,7 @@ form.onsubmit = e => {
         body: 'text=' + encodeURIComponent(text)
     }).then(() => {
         input.value = '';
+        input.focus(); // Add this line
     });
 };
 setInterval(fetchMessages, 2000);
