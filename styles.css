@@ -211,12 +211,32 @@ body {
 }
 
 .message .meta {
-    color: #777777;
+    color: #777777; /* Keep existing color */
+    font-size: 0.7rem; /* Keep existing font-size */
+    margin-top: 0.4rem; /* Keep existing margin-top */
+    /* display property is controlled by JS (initially inline none, then block/none) */
+    /* No flex properties needed as children will be block and stack vertically */
+}
+
+.message .meta .detailed-time,
+.message .meta .detailed-read-by {
+    display: none; /* Ensure they are hidden by default */
+    /* They will be set to display:block by JS when toggled */
+    /* Add some spacing if both are shown */
+    margin-bottom: 4px;
+}
+.message .meta .detailed-read-by:last-child {
+    margin-bottom: 0; /* No margin for the last item */
+}
+
+.message .message-time {
     font-size: 0.7rem;
-    margin-top: 0.4rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    color: #999999; /* Slightly dimmer than meta text */
+    margin-left: 8px;
+    cursor: pointer;
+}
+.message .message-time:hover {
+    color: #BBBBBB;
 }
 
 .message .read {

@@ -25,17 +25,50 @@ function fetchMessages() {
 }
 function addMessage(m) {
     const div = document.createElement('div');
-    div.className = 'message';
-    div.innerHTML = `<strong>${m.user}</strong>: <span class="text">${m.text}</span>` +
+    if (m.user === currentUser) {
+        div.className = 'message current-user-message';
+    } else {
+        div.className = 'message';
+    }
+
+    const messageDate = new Date(m.timestamp * 1000);
+    const roughTime = messageDate.getHours().toString().padStart(2, '0') + ':' + messageDate.getMinutes().toString().padStart(2, '0');
+    const detailedTimeStr = messageDate.toLocaleString();
+    const readByList = m.read_by.length > 0 ? m.read_by.join(', ') : 'None';
+
+    div.innerHTML = `<strong>${m.user}</strong>: <span class="text">${m.text}</span> <span class="message-time">${roughTime}</span>` +
         ` <span class="read">已读 ${m.read_by.length}</span>` +
-        ` <div class="meta" style="display:none">${new Date(m.timestamp*1000).toLocaleString()}<br>${m.read_by.join(', ')}</div>`;
-    div.querySelector('.text').onclick = () => {
+        ` <div class="meta" style="display:none">` +
+        `  <span class="detailed-time" style="display:none">${detailedTimeStr}</span>` +
+        `  <span class="detailed-read-by" style="display:none">Read by: ${readByList}</span>` +
+        ` </div>`;
+
+    div.querySelector('.message-time').onclick = () => {
         const meta = div.querySelector('.meta');
-        meta.style.display = meta.style.display === 'none' ? 'block' : 'none';
+        const detailedTime = meta.querySelector('.detailed-time');
+        const detailedReadBy = meta.querySelector('.detailed-read-by');
+
+        detailedTime.style.display = detailedTime.style.display === 'none' ? 'block' : 'none';
+
+        if (detailedTime.style.display === 'block' || detailedReadBy.style.display === 'block') {
+            meta.style.display = 'block';
+        } else {
+            meta.style.display = 'none';
+        }
     };
+
     div.querySelector('.read').onclick = () => {
         const meta = div.querySelector('.meta');
-        meta.style.display = meta.style.display === 'none' ? 'block' : 'none';
+        const detailedTime = meta.querySelector('.detailed-time');
+        const detailedReadBy = meta.querySelector('.detailed-read-by');
+
+        detailedReadBy.style.display = detailedReadBy.style.display === 'none' ? 'block' : 'none';
+
+        if (detailedTime.style.display === 'block' || detailedReadBy.style.display === 'block') {
+            meta.style.display = 'block';
+        } else {
+            meta.style.display = 'none';
+        }
     };
     msgs.appendChild(div);
     msgs.scrollTop = msgs.scrollHeight;
