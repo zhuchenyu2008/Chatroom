@@ -2,34 +2,60 @@ let lastId = 0;
 const msgs = document.getElementById('messages');
 const form = document.getElementById('send-form');
 const input = document.getElementById('message');
+// currentUser should be defined in chat.php, e.g., <script>const currentUser = '...';</script>
 
 function fetchMessages() {
     fetch('fetch.php?since=' + lastId)
         .then(r => {
             if (!r.ok) {
-                throw new Error('Network response was not ok: ' + r.statusText);
+                // Attempt to parse error if JSON, otherwise use statusText
+                return r.json().catch(() => null).then(errorBody => {
+                    throw new Error('Network response was not ok: ' + r.statusText + (errorBody ? ' - ' + JSON.stringify(errorBody) : ''));
+                });
             }
             return r.json();
         })
         .then(data => {
+            if (!data || !data.messages) {
+                console.warn('Received no messages data or malformed data:', data);
+                return; // Exit if data is not as expected
+            }
+
             document.getElementById('online-count').textContent = '在线人数: ' + data.online;
 
             const messagesContainer = msgs;
             const isScrolledToBottom = messagesContainer.scrollHeight - messagesContainer.clientHeight <= messagesContainer.scrollTop + 5;
-
-            messagesContainer.innerHTML = '';
-
+            let newMessagesWereAdded = false;
             const idsToMarkRead = [];
 
-            if (data.messages && data.messages.length) { // Added check for data.messages
-                data.messages.forEach(m => {
-                    addMessage(m);
-                    lastId = Math.max(lastId, m.id);
-                    idsToMarkRead.push(m.id);
-                });
-            }
+            data.messages.forEach(m => {
+                if (!m || typeof m.id === 'undefined') {
+                    console.warn('Skipping malformed message object:', m);
+                    return; // Skip this message
+                }
 
-            if (isScrolledToBottom) {
+                lastId = Math.max(lastId, m.id);
+                idsToMarkRead.push(m.id);
+
+                let existingMsgDiv = document.getElementById('message-' + m.id);
+
+                const readByArray = m.read_by || [];
+                const readCount = readByArray.length;
+                const readByList = readByArray.length > 0 ? readByArray.join(', ') : 'None';
+
+                if (existingMsgDiv) {
+                    const readSpan = existingMsgDiv.querySelector('.read');
+                    if (readSpan) readSpan.textContent = '已读 ' + readCount;
+
+                    const detailedReadBySpan = existingMsgDiv.querySelector('.detailed-read-by');
+                    if (detailedReadBySpan) detailedReadBySpan.textContent = 'Read by: ' + readByList;
+                } else {
+                    addMessage(m);
+                    newMessagesWereAdded = true;
+                }
+            });
+
+            if (newMessagesWereAdded && isScrolledToBottom) {
                 messagesContainer.scrollTop = messagesContainer.scrollHeight;
             }
 
@@ -43,6 +69,7 @@ function fetchMessages() {
         })
         .catch(error => {
             console.error('Error fetching messages:', error);
+            // Could update UI to show error to user, e.g. a small banner
         });
 }
 
@@ -57,14 +84,16 @@ function addMessage(m) {
         div.className = 'message system-message';
         div.innerHTML = `<span class="text">${m.text}</span> <span class="message-time">${roughTime}</span>`;
     } else {
-        if (m.user === currentUser) {
+        // Ensure currentUser is available, or provide a fallback.
+        // This script assumes 'currentUser' is a global variable defined in the HTML.
+        if (typeof currentUser !== 'undefined' && m.user === currentUser) {
             div.className = 'message current-user-message';
         } else {
             div.className = 'message';
         }
 
         const detailedTimeStr = messageDate.toLocaleString();
-        const readByArray = m.read_by || []; // Ensure read_by is an array
+        const readByArray = m.read_by || [];
         const readByList = readByArray.length > 0 ? readByArray.join(', ') : 'None';
         const readCount = readByArray.length;
 
@@ -88,6 +117,7 @@ function addMessage(m) {
                 detailedTime.style.display = detailedTime.style.display === 'none' ? 'block' : 'none';
 
                 const detailedReadBy = meta.querySelector('.detailed-read-by');
+                // Check if detailedReadBy exists before accessing its style
                 if (detailedTime.style.display === 'block' || (detailedReadBy && detailedReadBy.style.display === 'block')) {
                     meta.style.display = 'block';
                 } else {
@@ -106,6 +136,7 @@ function addMessage(m) {
                 detailedReadBy.style.display = detailedReadBy.style.display === 'none' ? 'block' : 'none';
 
                 const detailedTime = meta.querySelector('.detailed-time');
+                // Check if detailedTime exists before accessing its style
                 if ((detailedTime && detailedTime.style.display === 'block') || detailedReadBy.style.display === 'block') {
                     meta.style.display = 'block';
                 } else {
@@ -115,6 +146,7 @@ function addMessage(m) {
         }
     }
     msgs.appendChild(div);
+    // No scrollTop adjustment here
 }
 
 form.onsubmit = e => {
@@ -128,20 +160,28 @@ form.onsubmit = e => {
     }).then(() => {
         input.value = '';
         input.focus();
-        // Optionally, immediately call fetchMessages or add the message optimistically
-        // For now, relying on the interval fetch
+        // Call fetchMessages immediately after sending for faster update of own message
+        // However, this might conflict with the setInterval if not handled carefully.
+        // For now, rely on the setInterval or a slight delay.
+        // A common pattern is to add the message optimistically to the UI here.
     }).catch(error => console.error('Error sending message:', error));
 };
 
-setInterval(fetchMessages, 2000);
+// Ensure fetchMessages is defined before setInterval uses it.
+const messageFetchInterval = setInterval(fetchMessages, 2000);
 fetchMessages(); // Initial fetch
 
 window.addEventListener('beforeunload', () => {
-    // Use sendBeacon if data must be sent, otherwise, this might not always complete
     if (navigator.sendBeacon) {
         navigator.sendBeacon('logout.php');
     } else {
-        // Fallback for older browsers - less reliable
-        fetch('logout.php', { method: 'POST', keepalive: true, credentials: 'omit' });
+        // Synchronous XHR is deprecated and unreliable here, but was a common fallback.
+        // For modern browsers, sendBeacon is preferred. If not available, it might not send.
+        // Using fetch with keepalive is a more modern alternative for unreliable sendBeacon fallbacks.
+        try {
+          fetch('logout.php', { method: 'POST', keepalive: true, credentials: 'omit' });
+        } catch(e) {
+          // Silently fail if fetch with keepalive also fails (e.g. browser doesn't support)
+        }
     }
 });
