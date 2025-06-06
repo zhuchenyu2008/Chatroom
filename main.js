@@ -25,7 +25,11 @@ function fetchMessages() {
 }
 function addMessage(m) {
     const div = document.createElement('div');
-    div.className = 'message';
+    if (m.user === currentUser) {
+        div.className = 'message current-user-message';
+    } else {
+        div.className = 'message';
+    }
     div.innerHTML = `<strong>${m.user}</strong>: <span class="text">${m.text}</span>` +
         ` <span class="read">已读 ${m.read_by.length}</span>` +
         ` <div class="meta" style="display:none">${new Date(m.timestamp*1000).toLocaleString()}<br>${m.read_by.join(', ')}</div>`;
