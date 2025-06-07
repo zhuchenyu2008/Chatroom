@@ -35,13 +35,14 @@ $stmt_update_active = $mysqli->prepare("INSERT INTO online_users (username, last
 if ($stmt_update_active) {
     $stmt_update_active->bind_param("s", $current_username);
     if (!$stmt_update_active->execute()) {
-        error_log("MySQLi execute failed for update_active: " . $stmt_update_active->error);
-        // Non-critical, proceed
+        error_log("CRITICAL_ERROR: MySQLi execute failed for update_active for user '$current_username': " . $stmt_update_active->error);
+        // Potentially send an error response or handle more gracefully depending on requirements
+    } else {
+        // error_log("DEBUG: Successfully updated last_active for user '$current_username'"); // Optional: for debugging
     }
     $stmt_update_active->close();
 } else {
-    error_log("MySQLi prepare failed for update_active: " . $mysqli->error);
-    // Non-critical, proceed
+    error_log("CRITICAL_ERROR: MySQLi prepare failed for update_active for user '$current_username': " . $mysqli->error);
 }
 
 
@@ -133,14 +134,23 @@ if ($messages_stmt) {
 }
 
 // Get current online user count
-$online_count = 0;
-$count_stmt = $mysqli->query("SELECT COUNT(*) as count FROM online_users");
-if ($count_stmt) {
-    $online_count = (int)$count_stmt->fetch_assoc()['count'];
-    $count_stmt->free();
+$online_count = 0; // Default value
+$count_query_sql = "SELECT COUNT(*) as count FROM online_users";
+$count_stmt_result = $mysqli->query($count_query_sql);
+
+if ($count_stmt_result) {
+    $row = $count_stmt_result->fetch_assoc();
+    if ($row && isset($row['count'])) {
+        $online_count = (int)$row['count'];
+        // error_log("DEBUG: Online user count successfully fetched: $online_count"); // Optional: for debugging
+    } else {
+        error_log("ERROR: Online user count query succeeded but returned unexpected row: " . var_export($row, true));
+        // $online_count remains 0
+    }
+    $count_stmt_result->free();
 } else {
-    error_log("MySQLi query failed for online count: " . $mysqli->error);
-    // Proceed with count 0 if query fails
+    error_log("CRITICAL_ERROR: MySQLi query failed for online count: " . $mysqli->error . " SQL: " . $count_query_sql);
+    // $online_count remains 0
 }
 
 
