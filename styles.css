@@ -470,40 +470,46 @@ body {
         height: calc(100vh - 80px);
     }
 
-/* Responsive adjustments for the send form on small screens */
+/* Responsive adjustments for the send form on small screens - single line */
 .send-form {
-    flex-wrap: wrap; /* Allow items to wrap */
-    justify-content: space-between; /* Distribute space for select and button line */
+    /* display: flex; align-items: center; are inherited from base .send-form style */
+    flex-wrap: nowrap; /* Ensure single line */
     /* padding: 0.6rem 0.8rem; is inherited from 768px media query, should be fine */
 }
 
 .send-form input[type="text"] {
-    flex-basis: 100%; /* Input takes full width on its own line */
-    margin-right: 0; /* No right margin if it's full width */
-    margin-bottom: 0.5rem; /* Space before the next line (select/button) */
+    /* flex-grow: 1; is inherited from base style */
+    flex-shrink: 1; /* Allow input to shrink */
+    min-width: 40px; /* Prevent input from becoming too small */
+    margin-right: 0.25rem; /* Reduced margin */
+    margin-bottom: 0; /* Remove bottom margin if it was added for wrapping */
     /* padding and font-size are handled by the combined rule below */
 }
 
 .send-form select#self-destruct-time {
-    min-width: 110px; /* Minimum width for the selector */
-    flex-grow: 1; /* Grow to fill available space with button */
-    /* margin-right: 0.5rem; is inherited from base style, for space next to button */
+    width: 105px;    /* Fixed width to ensure visibility */
+    flex-shrink: 0;  /* Prevent select from shrinking */
+    margin-right: 0.25rem; /* Reduced margin */
+    /* min-width: auto; removed */
+    /* flex-grow: 0; removed */
     /* padding and font-size are handled by the combined rule below */
 }
 
 .send-form button[type="submit"] {
-    flex-grow: 1; /* Grow to fill available space with select */
+    flex-shrink: 0; /* Prevent button from shrinking */
+    /* flex-grow: 0; removed */
+    margin-left: 0; /* Remove any auto margin if present */
     /* padding and font-size are handled by the combined rule below */
 }
 
 /* Combined rule for padding and font-size for consistency */
-    .send-form input[type="text"],
+.send-form input[type="text"],
 .send-form select#self-destruct-time,
-    .send-form button[type="submit"] {
-        padding: 0.5rem 0.8rem; /* Consistent padding for all form elements */
-        font-size: 0.85rem; /* Consistent font size */
-    /* Existing individual margin/flex properties will apply alongside these */
-    }
+.send-form button[type="submit"] {
+    padding: 0.5rem 0.8rem; /* Consistent padding for all form elements */
+    font-size: 0.85rem; /* Consistent font size */
+    /* Individual flex/width/margin properties above will apply alongside these */
+}
 
     .message strong {
         font-size: 0.9rem;
@@ -511,17 +517,5 @@ body {
 
     .message .text {
         font-size: 0.85rem;
-    }
-}
-
-@media (max-width: 360px) { /* Even smaller screens, stack select and button */
-    .send-form select#self-destruct-time {
-        flex-basis: 100%; /* Select takes full width */
-        margin-right: 0; /* No right margin if full width */
-        margin-bottom: 0.5rem; /* Space before button */
-    }
-    .send-form button[type="submit"] {
-        flex-basis: 100%; /* Button takes full width */
-        margin-left: 0; /* Ensure it's not pushed by auto margin if it was there */
     }
 }
