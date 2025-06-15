@@ -165,6 +165,36 @@ body {
     box-shadow: none;
 }
 
+/* Added styles for self-destruct timer selector */
+.send-form select#self-destruct-time {
+    background: #181818; /* Theme-appropriate background */
+    color: #F5F5F5; /* Theme-appropriate text color */
+    border: 1px solid #333333; /* Match other inputs */
+    border-radius: 20px; /* Match pill shape of chat input/button */
+    padding: 0.6rem 1rem; /* Match chat input padding */
+    margin-right: 0.5rem; /* Consistent spacing before send button */
+    min-width: 120px; /* Adjusted min-width, can be fine-tuned */
+    box-sizing: border-box;
+    font-family: inherit; /* Ensure font consistency */
+    font-size: inherit; /* Ensure font size consistency */
+    transition: border-color 0.2s ease;
+    -webkit-appearance: none; /* Remove default system appearance for custom arrow */
+    -moz-appearance: none;
+    appearance: none;
+    /* Custom arrow using SVG - color #AAAAAA to match #online-count */
+    background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23AAAAAA%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.4-5.4-13z%22%2F%3E%3C%2Fsvg%3E');
+    background-repeat: no-repeat;
+    background-position: right 0.7rem top 50%; /* Adjust position of arrow */
+    background-size: .65em auto; /* Adjust size of arrow */
+    cursor: pointer;
+}
+
+.send-form select#self-destruct-time:focus {
+    border-color: #555555; /* Match focus style of other inputs */
+    outline: none;
+    box-shadow: none;
+}
+
 .send-form button[type="submit"] {
     background: #282828;
     color: #F5F5F5;
@@ -281,6 +311,34 @@ body {
     opacity: 1;
 }
 
+/* Styles for message self-destruct info */
+.message .destruct-info {
+    font-size: 0.8em;
+    color: #AAAAAA; /* Muted grey, similar to online-count */
+    margin-left: 10px;
+    padding: 2px 6px; /* Adjusted padding */
+    background-color: #282828; /* Slightly different from message background, but still dark */
+    border-radius: 4px; /* Consistent border-radius */
+    display: inline-block; /* Allows margin and padding to work as expected */
+    vertical-align: middle; /* Align with text if text is multi-line */
+}
+
+.message.system-message .destruct-info { /* System messages shouldn't have this */
+    display: none;
+}
+
+.message .destruct-info.burn-after-read { /* Specific style for burn-after-read */
+    color: #e74c3c; /* A reddish warning color */
+    /* background-color: #4a2c2c; Optional: darker red background for more emphasis */
+}
+
+/* Styles for message fade-out animation */
+.message.message-fading-out {
+    opacity: 0;
+    transform: scale(0.95) translateX(20px); /* Slightly shrink and slide out to the right */
+    transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+}
+
 /* Animations */
 @keyframes fadein { /* General page fade-in */
     from { opacity: 0; }
@@ -361,6 +419,12 @@ body {
     .message .meta {
         font-size: 0.65rem;
     }
+
+    .message .destruct-info { /* Responsive adjustment for destruct-info */
+        font-size: 0.75em; /* Slightly smaller font on smaller screens */
+        margin-left: 8px; /* Adjust margin */
+        padding: 1px 4px; /* Adjust padding */
+    }
 }
 
 @media (max-width: 480px) {
@@ -406,11 +470,46 @@ body {
         height: calc(100vh - 80px);
     }
 
-    .send-form input[type="text"],
-    .send-form button[type="submit"] {
-        padding: 0.5rem 0.8rem;
-        font-size: 0.85rem;
-    }
+/* Responsive adjustments for the send form on small screens - single line */
+.send-form {
+    /* display: flex; align-items: center; are inherited from base .send-form style */
+    flex-wrap: nowrap; /* Ensure single line */
+    /* padding: 0.6rem 0.8rem; is inherited from 768px media query, should be fine */
+}
+
+.send-form input[type="text"] {
+    /* flex-grow: 1; is inherited from base style */
+    flex-shrink: 1; /* Allow input to shrink */
+    min-width: 40px; /* Prevent input from becoming too small */
+    margin-right: 0.25rem; /* Reduced margin */
+    margin-bottom: 0; /* Remove bottom margin if it was added for wrapping */
+    /* padding and font-size are handled by the combined rule below */
+}
+
+.send-form select#self-destruct-time {
+    width: 105px;    /* Fixed width to ensure visibility */
+    flex-shrink: 0;  /* Prevent select from shrinking */
+    margin-right: 0.25rem; /* Reduced margin */
+    /* min-width: auto; removed */
+    /* flex-grow: 0; removed */
+    /* padding and font-size are handled by the combined rule below */
+}
+
+.send-form button[type="submit"] {
+    flex-shrink: 0; /* Prevent button from shrinking */
+    /* flex-grow: 0; removed */
+    margin-left: 0; /* Remove any auto margin if present */
+    /* padding and font-size are handled by the combined rule below */
+}
+
+/* Combined rule for padding and font-size for consistency */
+.send-form input[type="text"],
+.send-form select#self-destruct-time,
+.send-form button[type="submit"] {
+    padding: 0.5rem 0.8rem; /* Consistent padding for all form elements */
+    font-size: 0.85rem; /* Consistent font size */
+    /* Individual flex/width/margin properties above will apply alongside these */
+}
 
     .message strong {
         font-size: 0.9rem;
