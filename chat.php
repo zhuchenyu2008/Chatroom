@@ -24,6 +24,17 @@ if (!isset($_SESSION['user'])) {
 <div id="messages" class="messages"></div>
 <form id="send-form" class="send-form">
     <input type="text" id="message" autocomplete="off" placeholder="输入消息..." required>
+    <select id="self-destruct-time">
+        <option value="60" selected>1 minute</option>
+        <option value="300">5 minutes</option>
+        <option value="3600">1 hour</option>
+        <option value="18000">5 hours</option>
+        <option value="43200">12 hours</option>
+        <option value="86400">1 day</option>
+        <option value="604800">1 week</option>
+        <option value="0">Burn after read</option>
+        <option value="-1">Never</option>
+    </select>
     <button type="submit">发送</button>
 </form>
 <script>const currentUser = '<?php echo htmlspecialchars($_SESSION['user']); ?>';</script>

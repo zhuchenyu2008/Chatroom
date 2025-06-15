@@ -33,11 +33,46 @@ $online[$_SESSION['user']] = $now;
 file_put_contents(__DIR__ . '/online.json', json_encode($online, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
 if ($changed) {
     file_put_contents(__DIR__ . '/messages.json', json_encode($messages, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
-    $newMessages = $messages;
+    $newMessages = $messages; // $newMessages now contains all messages, including any new system messages
 }
+
+// Filter messages before sending to client
+$currentTime = time();
+$messagesToClient = [];
+
+foreach ($newMessages as $message) {
+    // Pass through system messages or messages without a destruct_type (e.g., older messages)
+    if (!isset($message['destruct_type']) || (isset($message['user']) && $message['user'] === 'system')) {
+        $messagesToClient[] = $message;
+        continue;
+    }
+
+    // Handle timed messages
+    if ($message['destruct_type'] === 'timed') {
+        // Ensure necessary fields exist to prevent errors
+        if (isset($message['timestamp']) && isset($message['destruct_duration'])) {
+            $expiry_time = (int)$message['timestamp'] + (int)$message['destruct_duration'];
+            if ($currentTime >= $expiry_time) {
+                // Message has expired, do not add to $messagesToClient
+                continue;
+            }
+        } else {
+            // If a timed message is missing timestamp or duration, it's malformed.
+            // Decide whether to send it or skip it. Skipping might be safer.
+            // For now, let it pass if essential fields for expiry check are missing,
+            // effectively treating it as non-expiring in this edge case.
+            // A stricter approach would be to 'continue' here as well.
+        }
+    }
+
+    // "burn_after_read", "never" messages, and non-expired "timed" messages are added.
+    // Future logic for "burn_after_read" might involve more checks here (e.g., if already read by all recipients).
+    $messagesToClient[] = $message;
+}
+
 header('Content-Type: application/json');
 echo json_encode([
-    'messages' => array_values($newMessages),
+    'messages' => array_values($messagesToClient), // Use the filtered list
     'online' => count($online)
 ], JSON_UNESCAPED_UNICODE);
 ?>
