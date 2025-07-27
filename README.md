@@ -64,6 +64,31 @@ A simple, anonymous chat room application built with PHP and file-based JSON sto
 └── README.md             # 本文件 (This file)
 ```
 
+## 🐳 Docker 部署 (Docker Deployment)
+
+1. **登录并安装 Docker（如需要）**
+   ```bash
+   ssh your_user@<服务器IP>
+   # 如果系统中没有 Docker，可以执行以下命令安装
+   sudo apt update
+   sudo apt install -y docker.io
+   ```
+
+2. **拉取项目并构建镜像**
+   ```bash
+   git clone https://github.com/zhuchenyu2008/Chatroom.git
+   cd Chatroom
+   docker build -t chatroom .
+   ```
+
+3. **运行容器并映射端口**
+   ```bash
+   docker run -d --name chatroom -p 8080:80 chatroom
+   ```
+
+4. **访问应用**
+   打开浏览器访问 `http://<服务器IP>:8080/index.php`。
+
 ## 🤝 贡献 (Contributing)
 
 欢迎为此项目贡献代码或提出改进建议！你可以通过以下方式参与：
