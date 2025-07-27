@@ -66,8 +66,6 @@ A simple, anonymous chat room application built with PHP and file-based JSON sto
 
 ## 🐳 Docker 部署 (Docker Deployment)
 
-下面示例展示了从 SSH 登录服务器开始的完整部署流程。如果你的服务器尚未安装 Docker，可先通过包管理器安装。
-
 1. **登录并安装 Docker（如需要）**
    ```bash
    ssh your_user@<服务器IP>
@@ -78,7 +76,7 @@ A simple, anonymous chat room application built with PHP and file-based JSON sto
 
 2. **拉取项目并构建镜像**
    ```bash
-   git clone <仓库地址> Chatroom
+   git clone https://github.com/zhuchenyu2008/Chatroom.git
    cd Chatroom
    docker build -t chatroom .
    ```
